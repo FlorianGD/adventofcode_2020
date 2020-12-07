@@ -20,7 +20,9 @@ function find_possibles(rules::AbstractString)
         for (rule_color, rule_contained) in assoc
             if color in [r[2] for r in rule_contained]
                 push!(possible, rule_color)
-                push!(to_check, rule_color)
+                if !(rule_color in to_check)
+                    push!(to_check, rule_color)
+                end
             end
         end
     end
