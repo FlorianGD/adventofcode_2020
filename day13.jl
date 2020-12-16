@@ -10,4 +10,22 @@ function part1(buses::Array{Int}, timestamp::Int)
     return buses[bus_min] * remainders[bus_min]
 end
 
-prinln("Part 1: $(part1(buses_p1, timestamp))")
+println("Part 1: $(part1(buses_p1, timestamp))")
+
+buses_p2 = [[parse(Int, b), -i + 1] for (i, b) in enumerate(split(buses_raw, ",")) if b != "x"]
+
+function chineseremainder(Ns::Vector{BigInt}, remainders::Vector{BigInt})
+    n = BigInt(prod(Ns))
+    Ni = n .÷ Ns
+    invs = invmod.(Ni, Ns) .* Ni
+    s = sum(remainders .* invs) % n
+    return s >= 0 ? s : s + n
+end
+
+function part2(buses)
+    Ns = @. BigInt(first(buses))
+    remainders = @. BigInt(last(buses))
+    return chineseremainder(Ns, remainders)
+end
+
+println("Part 2: $(part2(buses_p2))")
