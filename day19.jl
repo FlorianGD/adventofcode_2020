@@ -59,3 +59,36 @@ data = readlines("day19.txt")
 
 println("Part 1: $(part1(data))")
 
+# Horrible solution but works
+# 0 is 8 11
+# the new 8 is 8+ (regex 8 once or more)
+# the new 11 is 42 {i} 31 {i}
+# making the regex once is not possible as it
+# will be too big so I make a lot of regexes
+
+function makeregex(mapping, i)
+    d = "($(mapping["8"]))+"
+    a = mapping["42"]
+    b = mapping["31"]
+    c = "($a){$i}($b){$i}"
+    m = "^$d$c\$"
+    return Regex(m)
+end
+
+function part2(lines)
+    rules, messages = parseinput(lines)      
+    mapping = makemapping(rules)
+    regexes =[makeregex(mapping, i) for i in 1:10]
+    total = 0
+    for m in messages
+        if any(occursin.(regexes, m))
+	    total += 1
+	end
+    end
+    return total
+end
+
+println("Part2 : $(part2(data))")
+
+
+    
