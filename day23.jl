@@ -33,7 +33,52 @@ end
 
 println("Part 1: $(result(play(data)))")
 
-# Shame
-const data2 = [parse.(Int, split("219748365", ""))..., 10:1000000...]
+function tonextsdict(data::Vector{Int}, p1::Bool=false)
+    nexts = Dict{Int,Int}()
+    for (d, n) in zip(data, data[2:end])
+        nexts[d] = n
+    end
+    if p1
+        nexts[data[end]] = data[1]
+        return nexts
+    end
+    nexts[data[end]] = 10
+    for i in 10:999_999
+        nexts[i] = i + 1
+    end
+    nexts[1_000_000] = data[1]
+    return nexts
+end
+
+function move2!(nexts::Dict{Int,Int}, current::Int)
+    n1 = nexts[current]
+    n2 = nexts[n1]
+    n3 = nexts[n2]
+    nextcurrent = nexts[n3]
+    dest = destination([n1, n2, n3], current, length(nexts))
+    # insert here
+    finalnext = nexts[dest]
+    nexts[current] = nextcurrent
+    nexts[dest] = n1
+    nexts[n3] = finalnext
+    return nexts, nextcurrent
+end
+
+function play2!(nexts::Dict{Int,Int}, start::Int, n::Int=10_000_000)
+    current = start
+    for i in 1:n
+        nexts, current = move2!(nexts, current)
+    end
+    return nexts
+end
 
 
+function part2(data)
+    nexts = tonextsdict(data)
+    play2!(nexts, data[1])
+    a = nexts[1]
+    b = nexts[a]
+    return a * b
+end
+
+println("Part 2: $(part2(data))")
