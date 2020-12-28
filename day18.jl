@@ -83,4 +83,4 @@ function part2bis(lines)
     return sum(mathfromast(line) for line in lines)
 end
 
-println("Part2 with ast manipulation: $(p2)")
+println("Part2 with ast manipulation: $(part2bis(data))")
